@@ -27,6 +27,9 @@ function threads_init() {
 	elgg_register_action('discussion/reply/save', "$action_base/reply/save.php");
 	elgg_register_action('discussion/reply/delete', "$action_base/reply/delete.php");
 
+	// add links to reply, edit or delete replies.
+	elgg_register_plugin_hook_handler('register', 'menu:reply', 'threads_reply_menu_setup');
+
 	// add link to owner block
 	//elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'threads_owner_block_menu');
 
@@ -245,20 +248,20 @@ function threads_can_edit_discussion($entity, $group_owner) {
 /**
  * Add edit and delete links for forum replies
  */
-/*function groups_annotation_menu_setup($hook, $type, $return, $params) {
+function threads_reply_menu_setup($hook, $type, $return, $params) {
 	if (elgg_in_context('widgets')) {
 		return $return;
 	}
 	
-	$annotation = $params['annotation'];
+	$entity = $params['entity'];
 
-	if ($annotation->name != 'group_topic_post') {
+	if ($entity->type != 'object' || $entity->getSubtype() != 'topicreply') {
 		return $return;
 	}
 
-	if ($annotation->canEdit()) {
+	if ($entity->canEdit()) {
 		$url = elgg_http_add_url_query_elements('action/discussion/reply/delete', array(
-			'annotation_id' => $annotation->id,
+			'entity_guid' => $entity->guid,
 		));
 
 		$options = array(
@@ -270,19 +273,32 @@ function threads_can_edit_discussion($entity, $group_owner) {
 		);
 		$return[] = ElggMenuItem::factory($options);
 
-		$url = elgg_http_add_url_query_elements('discussion', array(
-			'annotation_id' => $annotation->id,
+		$url = elgg_http_add_url_query_elements('', array(
+			'action' => 'edit',
+			'entity_guid' => $entity->guid,
 		));
 
 		$options = array(
 			'name' => 'edit',
-			'href' => "#edit-annotation-$annotation->id",
+			'href' => $url,
 			'text' => elgg_echo('edit'),
 			'text_encode' => false,
-			'rel' => 'toggle',
+		);
+		$return[] = ElggMenuItem::factory($options);
+
+		$url = elgg_http_add_url_query_elements('', array(
+			'action' => 'reply',
+			'entity_guid' => $entity->guid,
+		));
+
+		$options = array(
+			'name' => 'reply',
+			'href' => $url,
+			'text' => elgg_echo('reply'),
+			'text_encode' => false,
 		);
 		$return[] = ElggMenuItem::factory($options);
 	}
 
 	return $return;
-}*/
+}
