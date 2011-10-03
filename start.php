@@ -12,9 +12,9 @@ elgg_register_event_handler('init', 'system', 'threads_init');
  */
 function threads_init() {
 
-	//elgg_register_library('elgg:discussion', elgg_get_plugins_path() . 'threads/lib/discussion.php');
+	elgg_register_library('elgg:discussion', elgg_get_plugins_path() . 'threads/lib/discussion.php');
 
-	//elgg_register_page_handler('discussion', 'threads_page_handler');
+	elgg_register_page_handler('discussion', 'threads_page_handler');
 
 	//elgg_register_entity_url_handler('object', 'groupforumtopic', 'threads_override_topic_url');
 
