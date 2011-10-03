@@ -3,26 +3,36 @@
  * Discussion topic reply form body
  *
  * @uses $vars['entity'] A discussion topic object
+ * @uses $vars['parent'] The discussion topic or reply that we are replying
  * @uses $vars['inline'] Display a shortened form?
  */
 
 if (isset($vars['entity']) && elgg_is_logged_in()) {
+
+	if(empty($vars['parent'])){
+		$vars['parent'] = $vars['entity'];
+	}
+
 	echo elgg_view('input/hidden', array(
-		'name' => 'entity_guid',
+		'name' => 'topic_guid',
 		'value' => $vars['entity']->getGUID(),
+	));
+	echo elgg_view('input/hidden', array(
+		'name' => 'parent_guid',
+		'value' => $vars['parent']->getGUID(),
 	));
 
 	$inline = elgg_extract('inline', $vars, false);
 
-	$annotation = elgg_extract('annotation', $vars);
+	$reply = elgg_extract('reply', $vars);
 	
 	$value = '';
 
-	if ($annotation) {
-		$value = $annotation->value;
+	if ($reply) {
+		$value = $reply->description;
 		echo elgg_view('input/hidden', array(
-			'name' => 'annotation_id',
-			'value' => $annotation->id
+			'name' => 'entity_guid',
+			'value' => $reply->guid
 		));
 	}
 
@@ -34,7 +44,7 @@ if (isset($vars['entity']) && elgg_is_logged_in()) {
 	<div>
 		<label>
 		<?php
-			if ($annotation) {
+			if ($reply) {
 				echo elgg_echo('edit');
 			} else {
 				echo elgg_echo("reply");
@@ -45,7 +55,7 @@ if (isset($vars['entity']) && elgg_is_logged_in()) {
 	</div>
 	<div class="elgg-foot">
 <?php
-	if ($annotation) {
+	if ($reply) {
 		echo elgg_view('input/submit', array('value' => elgg_echo('save')));
 	} else {
 		echo elgg_view('input/submit', array('value' => elgg_echo('reply')));

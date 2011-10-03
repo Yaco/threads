@@ -7,9 +7,10 @@
 gatekeeper();
 
 // Get input
-$entity_guid = (int) get_input('entity_guid');
+$parent_guid = (int) get_input('parent_guid');
+$topic_guid = (int) get_input('topic_guid');
 $text = get_input('group_topic_post');
-$annotation_id = (int) get_input('annotation_id');
+$entity_guid = (int) get_input('entity_guid');
 
 // reply cannot be empty
 if (empty($text)) {
@@ -17,8 +18,9 @@ if (empty($text)) {
 	forward(REFERER);
 }
 
-$topic = get_entity($entity_guid);
-if (!$topic) {
+$topic = get_entity($topic_guid);
+$parent = get_entity($parent_guid);
+if (!$topic || !$parent) {
 	register_error(elgg_echo('grouppost:nopost'));
 	forward(REFERER);
 }
@@ -32,28 +34,38 @@ if (!$group->canWriteToContainer($user)) {
 }
 
 // if editing a reply, make sure it's valid
-if ($annotation_id) {
-	$annotation = elgg_get_annotation_from_id($annotation_id);
-	if (!$annotation->canEdit()) {
+if ($entity_guid) {
+	$entity = get_entity($entity_guid);
+	if (!$entity->canEdit()) {
 		register_error(elgg_echo('groups:notowner'));
 		forward(REFERER);
 	}
 
-	$annotation->value = $text;
-	if (!$annotation->save()) {
+	$entity->description = $text;
+	if (!$entity->save()) {
 		system_message(elgg_echo('groups:forumpost:error'));
 		forward(REFERER);
 	}
 	system_message(elgg_echo('groups:forumpost:edited'));
 } else {
 	// add the reply to the forum topic
-	$reply_id = $topic->annotate('group_topic_post', $text, $topic->access_id, $user->guid);
-	if ($reply_id == false) {
+	$entity = new ElggObject();
+	$entity->subtype = 'topicreply';
+	$entity->title = $title ? $title : "Re:".$topic->title;
+	$entity->description = $text;
+	$entity->access_id = $topic->access_id;
+	$entity->container_guid = $topic->container_guid;
+	if($entity->save()){
+		$entity->addRelationship($parent_guid, 'parent');
+		$entity->addRelationship($topic_guid, 'top');
+		$entity->save();
+	} else {
 		system_message(elgg_echo('groupspost:failure'));
 		forward(REFERER);
 	}
 
-	add_to_river('river/annotation/group_topic_post/reply', 'reply', $user->guid, $topic->guid, "", 0, $reply_id);
+	//TODO it is not an annotation:
+	//add_to_river('river/annotation/group_topic_post/reply', 'reply', $user->guid, $topic->guid, "", 0, $reply_id);
 	system_message(elgg_echo('groupspost:success'));
 }
 
