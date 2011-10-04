@@ -164,23 +164,10 @@ function discussion_handle_view_page($guid) {
 	elgg_push_breadcrumb($topic->title);
 
 	$content = elgg_view_entity($topic, array('full_view' => true));
-	if ($topic->status == 'closed') {
-		$content .= elgg_view('discussion/replies', array(
-			'entity' => $topic,
-			'show_add_form' => false,
-		));
-		$content .= elgg_view('discussion/closed');
-	} elseif ($group->canWriteToContainer() || elgg_is_admin_logged_in()) {
-		$content .= elgg_view('discussion/replies', array(
-			'entity' => $topic,
-			'show_add_form' => true,
-		));
-	} else {
-		$content .= elgg_view('discussion/replies', array(
-			'entity' => $topic,
-			'show_add_form' => false,
-		));
-	}
+	$content .= elgg_view('discussion/replies', array(
+		'entity' => $topic,
+		'text_box' => array('box'=>''),
+	));
 
 	$params = array(
 		'content' => $content,

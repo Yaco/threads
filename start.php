@@ -13,6 +13,7 @@ elgg_register_event_handler('init', 'system', 'threads_init');
 function threads_init() {
 
 	elgg_register_library('elgg:discussion', elgg_get_plugins_path() . 'threads/lib/discussion.php');
+	elgg_register_library('elgg:threads', elgg_get_plugins_path() . 'threads/lib/threads.php');
 
 	elgg_register_page_handler('discussion', 'threads_page_handler');
 
@@ -258,6 +259,8 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 	if ($entity->type != 'object' || $entity->getSubtype() != 'topicreply') {
 		return $return;
 	}
+	
+	elgg_load_library('elgg:threads');
 
 	if ($entity->canEdit()) {
 		$url = elgg_http_add_url_query_elements('action/discussion/reply/delete', array(
@@ -285,6 +288,13 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 			'text_encode' => false,
 		);
 		$return[] = ElggMenuItem::factory($options);
+	}
+	
+	$group = $entity->getContainerEntity();
+	$topic = threads_top($entity);
+	
+	if(($group && $group->canWriteToContainer() ||
+		elgg_is_admin_logged_in()) && $topic->status != 'closed'){
 
 		$url = elgg_http_add_url_query_elements('', array(
 			'action' => 'reply',
