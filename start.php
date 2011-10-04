@@ -277,8 +277,8 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 		$return[] = ElggMenuItem::factory($options);
 
 		$url = elgg_http_add_url_query_elements('', array(
-			'action' => 'edit',
-			'entity_guid' => $entity->guid,
+			'box' => 'edit',
+			'guid' => $entity->guid,
 		));
 
 		$options = array(
@@ -297,8 +297,8 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 		elgg_is_admin_logged_in()) && $topic->status != 'closed'){
 
 		$url = elgg_http_add_url_query_elements('', array(
-			'action' => 'reply',
-			'entity_guid' => $entity->guid,
+			'box' => 'reply',
+			'guid' => $entity->guid,
 		));
 
 		$options = array(

@@ -2,38 +2,34 @@
 /**
  * Discussion topic reply form body
  *
- * @uses $vars['entity'] A discussion topic object
- * @uses $vars['parent'] The discussion topic or reply that we are replying
+ * @uses $vars['entity'] The entity to reply/edit
+ * @uses $vars['reply'] If it is an edition or a reply
  * @uses $vars['inline'] Display a shortened form?
  */
 
 if (isset($vars['entity']) && elgg_is_logged_in()) {
 
-	if(empty($vars['parent'])){
-		$vars['parent'] = $vars['entity'];
-	}
-
 	echo elgg_view('input/hidden', array(
-		'name' => 'topic_guid',
+		'name' => 'entity_guid',
 		'value' => $vars['entity']->getGUID(),
 	));
-	echo elgg_view('input/hidden', array(
-		'name' => 'parent_guid',
-		'value' => $vars['parent']->getGUID(),
-	));
+	echo "<style> #elgg-object-{$vars['entity']->guid}{
+		background-color: Wheat;
+	} </style>";
 
 	$inline = elgg_extract('inline', $vars, false);
 
 	$reply = elgg_extract('reply', $vars);
 	
+	echo elgg_view('input/hidden', array(
+		'name' => 'reply',
+		'value' => $reply,
+	));
+	
 	$value = '';
 
-	if ($reply) {
-		$value = $reply->description;
-		echo elgg_view('input/hidden', array(
-			'name' => 'entity_guid',
-			'value' => $reply->guid
-		));
+	if (!$reply) {
+		$value = $entity->description;
 	}
 
 	if ($inline) {
@@ -44,7 +40,7 @@ if (isset($vars['entity']) && elgg_is_logged_in()) {
 	<div>
 		<label>
 		<?php
-			if ($reply) {
+			if (!$reply) {
 				echo elgg_echo('edit');
 			} else {
 				echo elgg_echo("reply");
@@ -55,7 +51,7 @@ if (isset($vars['entity']) && elgg_is_logged_in()) {
 	</div>
 	<div class="elgg-foot">
 <?php
-	if ($reply) {
+	if (!$reply) {
 		echo elgg_view('input/submit', array('value' => elgg_echo('save')));
 	} else {
 		echo elgg_view('input/submit', array('value' => elgg_echo('reply')));
