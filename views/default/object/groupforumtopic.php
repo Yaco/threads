@@ -28,13 +28,14 @@ $date = elgg_view_friendly_time($topic->time_created);
 
 $replies_link = '';
 $replies_text = '';
-$num_replies = elgg_get_annotations(array(
-	'annotation_name' => 'group_topic_post',
-	'guid' => $topic->getGUID(),
-	'count' => true,
+$num_replies = elgg_get_entities_from_relationship (array(
+	'relationship' => 'top',
+	'relationship_guid' => $topic->guid,
+	'inverse_relationship' => true,
+	'count' => true
 ));
 if ($num_replies != 0) {
-	$last_reply = $topic->getAnnotations('group_topic_post', 1, 0, 'desc');
+	$last_reply = $topic->getEntitiesFromRelationship('top', true, 1);
 	$poster = $last_reply[0]->getOwnerEntity();
 	$reply_time = elgg_view_friendly_time($last_reply[0]->time_created);
 	$reply_text = elgg_echo('groups:updated', array($poster->name, $reply_time));
