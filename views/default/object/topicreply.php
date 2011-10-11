@@ -32,19 +32,39 @@ $body = <<<HTML
 		$friendlytime
 	</span>
 	$text
-	$replies
 </div>
 HTML;
 
 echo elgg_view_image_block($icon, $body);
 
-/*if ($annotation->canEdit()) {
+if ($entity->canEdit()) {
 	$form = elgg_view_form('discussion/reply/save', array(), array_merge(array(
-			'entity' => get_entity($annotation->entity_guid),
-			'reply' => $entity
+			'entity' => $entity,
+			'reply' => false
 		), $vars)
 	);
+	$hidden = "hidden";
+	
+	if(get_input('box') == "edit" && get_input('guid') == $entity->guid){
+		$hidden = "";
+	}
 
-	echo "<div class=\"hidden mbm\" id=\"edit-annotation-$annotation->id\">$form</div>";
-}*/
+	echo "<div class=\"$hidden mbm replies\" id=\"edit-topicreply-$entity->guid\">$form</div>";
+}
 
+if ($entity->canEdit()) {//FIXME it isn't can edit.
+	$form = elgg_view_form('discussion/reply/save', array(), array_merge(array(
+			'entity' => $entity,
+			'reply' => true
+		), $vars)
+	);
+	$hidden = "hidden";
+	
+	if(get_input('box') == "reply" && get_input('guid') == $entity->guid){
+		$hidden = "";
+	}
+
+	echo "<div class=\"$hidden mbm replies\" id=\"reply-topicreply-$entity->guid\">$form</div>";
+}
+
+echo $replies;

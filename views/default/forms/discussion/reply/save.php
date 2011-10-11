@@ -13,9 +13,6 @@ if (isset($vars['entity']) && elgg_is_logged_in()) {
 		'name' => 'entity_guid',
 		'value' => $vars['entity']->getGUID(),
 	));
-	echo "<style> #elgg-object-{$vars['entity']->guid}{
-		background-color: Wheat;
-	} </style>";
 
 	$inline = elgg_extract('inline', $vars, false);
 

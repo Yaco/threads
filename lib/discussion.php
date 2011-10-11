@@ -166,10 +166,6 @@ function discussion_handle_view_page($guid) {
 	$content = elgg_view_entity($topic, array('full_view' => true));
 	$content .= elgg_view('discussion/replies', array(
 		'entity' => $topic,
-		'box' => array(
-			'show_box'=>get_input('box'),
-			'guid'=>get_input('guid')
-		),
 	));
 
 	$params = array(
