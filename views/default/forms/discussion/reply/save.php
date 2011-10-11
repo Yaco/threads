@@ -29,7 +29,7 @@ if (isset($vars['entity']) && elgg_is_logged_in()) {
 	$value = '';
 
 	if (!$reply) {
-		$value = $entity->description;
+		$value = $vars['entity']->description;
 	}
 
 	if ($inline) {
