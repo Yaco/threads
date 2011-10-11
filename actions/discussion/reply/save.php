@@ -49,13 +49,13 @@ if (!$reply) {
 	}
 	system_message(elgg_echo('groups:forumpost:edited'));
 } else {
-	if(!threads_reply($entity_guid, $text)){
+	$reply_guid = threads_reply($entity_guid, $text);
+	if(!$reply_guid){
 		system_message(elgg_echo('groupspost:failure'));
 		forward(REFERER);
 	}
 
-	//TODO it is not an annotation:
-	//add_to_river('river/annotation/group_topic_post/reply', 'reply', $user->guid, $topic->guid, "", 0, $reply_id);
+	add_to_river('river/annotation/group_topic_post/reply', 'reply', $user->guid, $topic->guid, "", 0, $reply_guid);
 	system_message(elgg_echo('groupspost:success'));
 }
 
