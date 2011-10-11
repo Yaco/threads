@@ -52,6 +52,7 @@ function threads_init() {
 	// add link to reply topics
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'threads_topic_menu_setup');
 	elgg_register_plugin_hook_handler('register', 'menu:reply', 'likes_entity_menu_setup');
+	elgg_register_plugin_hook_handler('register', 'menu:river', 'threads_add_to_river_menu');
 	
 	elgg_extend_view('css/elgg', 'discussion/css');
 	
@@ -140,13 +141,14 @@ function threads_add_to_river_menu($hook, $type, $return, $params) {
 	if (elgg_is_logged_in() && !elgg_in_context('widgets')) {
 		$item = $params['item'];
 		$object = $item->getObjectEntity();
+		$reply = get_entity($item->annotation_id);
 		if (elgg_instanceof($object, 'object', 'groupforumtopic')) {
-			if ($item->annotation_id == 0) {
+			if ($reply) {
 				$group = $object->getContainerEntity();
 				if ($group->canWriteToContainer() || elgg_is_admin_logged_in()) {
 					$options = array(
 						'name' => 'reply',
-						'href' => "#groups-reply-$object->guid",
+						'href' => "#groups-reply-$reply->guid",
 						'text' => elgg_view_icon('speech-bubble'),
 						'title' => elgg_echo('reply:this'),
 						'rel' => 'toggle',
