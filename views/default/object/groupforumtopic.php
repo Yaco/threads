@@ -5,6 +5,8 @@
  * @package ElggGroups
 */
 
+elgg_load_library('elgg:threads');
+
 $full = elgg_extract('full_view', $vars, FALSE);
 $topic = elgg_extract('entity', $vars, FALSE);
 
@@ -28,12 +30,7 @@ $date = elgg_view_friendly_time($topic->time_created);
 
 $replies_link = '';
 $replies_text = '';
-$num_replies = elgg_get_entities_from_relationship (array(
-	'relationship' => 'top',
-	'relationship_guid' => $topic->guid,
-	'inverse_relationship' => true,
-	'count' => true
-));
+$num_replies = threads_get_all_replies_count($topic->guid);
 if ($num_replies != 0) {
 	$last_reply = $topic->getEntitiesFromRelationship('top', true, 1);
 	$poster = $last_reply[0]->getOwnerEntity();

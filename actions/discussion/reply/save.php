@@ -49,18 +49,7 @@ if (!$reply) {
 	}
 	system_message(elgg_echo('groups:forumpost:edited'));
 } else {
-	// add the reply to the forum topic
-	$reply = new ElggObject();
-	$reply->subtype = 'topicreply';
-	$reply->title = $title ? $title : "Re:".$topic->title;
-	$reply->description = $text;
-	$reply->access_id = $topic->access_id;
-	$reply->container_guid = $topic->container_guid;
-	if($reply->save()){
-		$reply->addRelationship($entity_guid, 'parent');
-		$reply->addRelationship($topic_guid, 'top');
-		$reply->save();
-	} else {
+	if(!threads_reply($entity_guid, $text)){
 		system_message(elgg_echo('groupspost:failure'));
 		forward(REFERER);
 	}
