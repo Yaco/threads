@@ -48,6 +48,9 @@ function threads_init() {
 	/*register_notification_object('object', 'groupforumtopic', elgg_echo('groupforumtopic:new'));
 	elgg_register_plugin_hook_handler('object:notifications', 'object', 'group_object_notifications_intercept');
 	elgg_register_plugin_hook_handler('notify:entity:message', 'object', 'groupforumtopic_notify_message');*/
+	
+	// add link to reply topics
+	elgg_register_plugin_hook_handler('register', 'menu:entity', 'threads_topic_menu_setup');
 }
 
 /**
@@ -244,6 +247,25 @@ function threads_can_edit_discussion($entity, $group_owner) {
 	} else {
 		return false;
 	}
+}
+
+function threads_topic_menu_setup($hook, $type, $return, $params){
+	
+	$entity = $params['entity'];
+	
+	$url = elgg_http_add_url_query_elements('', array(
+		'box' => 'reply',
+		'guid' => $entity->guid,
+	));
+
+	$options = array(
+		'name' => 'reply',
+		'href' => $url,
+		'text' => elgg_echo('reply'),
+		'text_encode' => false,
+	);
+	$return = array_merge(array(ElggMenuItem::factory($options)), $return);
+	return $return;
 }
 
 /**
