@@ -6,11 +6,12 @@
 
 gatekeeper();
 
+elgg_load_library('elgg:threads');
+
 // Get input
-$parent_guid = (int) get_input('parent_guid');
-$topic_guid = (int) get_input('topic_guid');
 $text = get_input('group_topic_post');
 $entity_guid = (int) get_input('entity_guid');
+$reply = (bool) get_input('reply', false);
 
 // reply cannot be empty
 if (empty($text)) {
@@ -18,9 +19,9 @@ if (empty($text)) {
 	forward(REFERER);
 }
 
-$topic = get_entity($topic_guid);
-$parent = get_entity($parent_guid);
-if (!$topic || !$parent) {
+$topic = threads_top($entity_guid);
+$topic_guid = $topic->guid;
+if (!$topic) {
 	register_error(elgg_echo('grouppost:nopost'));
 	forward(REFERER);
 }
@@ -34,9 +35,9 @@ if (!$group->canWriteToContainer($user)) {
 }
 
 // if editing a reply, make sure it's valid
-if ($entity_guid) {
+if (!$reply) {
 	$entity = get_entity($entity_guid);
-	if (!$entity->canEdit()) {
+	if (!$entity || !$entity->canEdit()) {
 		register_error(elgg_echo('groups:notowner'));
 		forward(REFERER);
 	}
@@ -49,16 +50,16 @@ if ($entity_guid) {
 	system_message(elgg_echo('groups:forumpost:edited'));
 } else {
 	// add the reply to the forum topic
-	$entity = new ElggObject();
-	$entity->subtype = 'topicreply';
-	$entity->title = $title ? $title : "Re:".$topic->title;
-	$entity->description = $text;
-	$entity->access_id = $topic->access_id;
-	$entity->container_guid = $topic->container_guid;
-	if($entity->save()){
-		$entity->addRelationship($parent_guid, 'parent');
-		$entity->addRelationship($topic_guid, 'top');
-		$entity->save();
+	$reply = new ElggObject();
+	$reply->subtype = 'topicreply';
+	$reply->title = $title ? $title : "Re:".$topic->title;
+	$reply->description = $text;
+	$reply->access_id = $topic->access_id;
+	$reply->container_guid = $topic->container_guid;
+	if($reply->save()){
+		$reply->addRelationship($entity_guid, 'parent');
+		$reply->addRelationship($topic_guid, 'top');
+		$reply->save();
 	} else {
 		system_message(elgg_echo('groupspost:failure'));
 		forward(REFERER);
