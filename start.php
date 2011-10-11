@@ -263,8 +263,9 @@ function threads_topic_menu_setup($hook, $type, $return, $params){
 		'href' => $url,
 		'text' => elgg_echo('reply'),
 		'text_encode' => false,
+		'priority' => 200
 	);
-	$return = array_merge(array(ElggMenuItem::factory($options)), $return);
+	$return[] = ElggMenuItem::factory($options);
 	return $return;
 }
 
