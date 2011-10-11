@@ -3,10 +3,10 @@
  * Delete discussion reply
  */
 
-$id = (int) get_input('annotation_id');
+$entity_guid = (int) get_input('entity_guid');
 
-$reply = elgg_get_annotation_from_id($id);
-if (!$reply || $reply->name != 'group_topic_post') {
+$reply = get_entity($entity_guid);
+if (!$reply || $reply->getSubtype() != 'topicreply') {
 	register_error(elgg_echo('discussion:reply:error:notdeleted'));
 	forward(REFERER);
 }
