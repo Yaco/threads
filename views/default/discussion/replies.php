@@ -12,15 +12,12 @@ echo '<div id="group-replies" class="mtl">';
 
 $options = array(
 	'relationship_guid' => $vars['entity']->getGUID(),
-	'relationship' => 'top',
+	'relationship' => 'parent',
 	'inverse_relationship' => true,
+	'order_by' => 'e.time_created asc'
 );
 
-$html = elgg_list_entities_from_relationship($options);
-if ($html) {
-	echo '<h3>' . elgg_echo('group:replies') . '</h3>';
-	echo $html;
-}
+echo elgg_list_entities_from_relationship($options);
 
 $entity = get_entity((int) $vars['box']['guid']);
 

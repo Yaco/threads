@@ -22,6 +22,8 @@ $text = elgg_view("output/longtext", array("value" => $entity->description));
 
 $friendlytime = elgg_view_friendly_time($entity->time_created);
 
+$replies = elgg_view('discussion/replies', array('entity' => $entity));
+
 $body = <<<HTML
 <div class="mbn">
 	$menu
@@ -30,6 +32,7 @@ $body = <<<HTML
 		$friendlytime
 	</span>
 	$text
+	$replies
 </div>
 HTML;
 
