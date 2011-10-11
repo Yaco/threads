@@ -23,6 +23,7 @@ $options = array(
 	'subtype' => 'groupforumtopic',
 	'container_guid' => $group->getGUID(),
 	'limit' => 6,
+	'order_by' => 'e.last_action desc',
 	'full_view' => false,
 	'pagination' => false,
 );
