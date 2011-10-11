@@ -37,6 +37,9 @@ HTML;
 
 echo elgg_view_image_block($icon, $body);
 
+elgg_load_js('jquery.plugins.parsequery');
+elgg_load_js('elgg.threads');
+
 if ($entity->canEdit()) {
 	$form = elgg_view_form('discussion/reply/save', array(), array_merge(array(
 			'entity' => $entity,

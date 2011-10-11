@@ -52,7 +52,14 @@ function threads_init() {
 	// add link to reply topics
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'threads_topic_menu_setup');
 	elgg_register_plugin_hook_handler('register', 'menu:reply', 'likes_entity_menu_setup');
+	
 	elgg_extend_view('css/elgg', 'discussion/css');
+	
+	$threads_js = elgg_get_simplecache_url('js', 'threads');
+	elgg_register_js('elgg.threads', $threads_js);
+	
+	$parsequery_js = 'mod/threads/vendors/jquery-plugins/parsequery.js';
+	elgg_register_js('jquery.plugins.parsequery', $parsequery_js);
 }
 
 /**
