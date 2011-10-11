@@ -306,7 +306,8 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 			'href' => $url,
 			'text' => "<span class=\"elgg-icon elgg-icon-delete\"></span>",
 			'confirm' => elgg_echo('deleteconfirm'),
-			'text_encode' => false
+			'text_encode' => false,
+			'priority' => 500
 		);
 		$return[] = ElggMenuItem::factory($options);
 
@@ -320,6 +321,7 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 			'href' => $url,
 			'text' => elgg_echo('edit'),
 			'text_encode' => false,
+			'priority' => 100,
 		);
 		$return[] = ElggMenuItem::factory($options);
 	}
@@ -340,6 +342,7 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 			'href' => $url,
 			'text' => elgg_echo('reply'),
 			'text_encode' => false,
+			'priority' => 50,
 		);
 		$return[] = ElggMenuItem::factory($options);
 	}
