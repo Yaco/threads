@@ -166,6 +166,7 @@ function discussion_handle_view_page($guid) {
 	$content = elgg_view_entity($topic, array('full_view' => true));
 	$content .= elgg_view('discussion/replies', array(
 		'entity' => $topic,
+		'id' => 'group-replies'
 	));
 
 	$params = array(
