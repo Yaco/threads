@@ -264,19 +264,27 @@ function threads_topic_menu_setup($hook, $type, $return, $params){
 	
 	$entity = $params['entity'];
 	
-	$url = elgg_http_add_url_query_elements('', array(
-		'box' => 'reply',
-		'guid' => $entity->guid,
-	));
+	elgg_load_library('elgg:threads');
+	
+	$group = $entity->getContainerEntity();
+	$topic = threads_top($entity->guid);
+	
+	if(($group && $group->canWriteToContainer() ||
+		elgg_is_admin_logged_in()) && $topic->status != 'closed'){
+		$url = elgg_http_add_url_query_elements($topic->getURL(), array(
+			'box' => 'reply',
+			'guid' => $entity->guid,
+		));
 
-	$options = array(
-		'name' => 'reply',
-		'href' => $url,
-		'text' => elgg_echo('reply'),
-		'text_encode' => false,
-		'priority' => 200
-	);
-	$return[] = ElggMenuItem::factory($options);
+		$options = array(
+			'name' => 'reply',
+			'href' => $url,
+			'text' => elgg_echo('reply'),
+			'text_encode' => false,
+			'priority' => 200
+		);
+		$return[] = ElggMenuItem::factory($options);
+	}
 	return $return;
 }
 

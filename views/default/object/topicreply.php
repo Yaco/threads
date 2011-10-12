@@ -6,7 +6,7 @@
 $entity = elgg_extract('entity', $vars);
 
 $owner = get_entity($entity->owner_guid);
-if (!$owner) {
+if (!$entity || !$owner) {
 	return true;
 }
 $icon = elgg_view_entity_icon($owner, 'tiny');
@@ -55,7 +55,7 @@ if ($entity->canEdit()) {
 	echo "<div class=\"$hidden mbm replies\" id=\"edit-topicreply-$entity->guid\">$form</div>";
 }
 
-if ($entity->canEdit()) {//FIXME it isn't can edit.
+if ($entity->canAnnotate()) {
 	$form = elgg_view_form('discussion/reply/save', array(), array_merge(array(
 			'entity' => $entity,
 			'reply' => true

@@ -94,3 +94,19 @@ HTML;
 
 	echo elgg_view_image_block($poster_icon, $list_body);
 }
+
+if ($topic->canAnnotate()) {
+	$form = elgg_view_form('discussion/reply/save', array(), array_merge(array(
+			'entity' => $topic,
+			'reply' => true
+		), $vars)
+	);
+	$hidden = "hidden";
+	
+	if(get_input('box') == "reply" && get_input('guid') == $topic->guid){
+		$hidden = "";
+	}
+
+	echo "<div class=\"$hidden mbm replies\" id=\"reply-topicreply-$topic->guid\">$form</div>";
+}
+
