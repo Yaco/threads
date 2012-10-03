@@ -61,6 +61,35 @@ function threads_init() {
 	
 	$parsequery_js = 'mod/threads/vendors/jquery-plugins/parsequery.js';
 	elgg_register_js('jquery.plugins.parsequery', $parsequery_js);
+
+	// activity streams support
+	elgg_register_plugin_hook_handler('activitystreams:parent', 'entity', 'threads_activitystreams_parent');
+	elgg_register_plugin_hook_handler('activitystreams:object', 'river', 'threads_activitystreams_object');
+}
+
+function threads_activitystreams_object($hook, $type, $return, $params) {
+	$item = $params['item'];
+	$object = $item->getObjectEntity();
+	if (in_array($item->view, array('river/annotation/group_topic_post/reply'))) {
+		//$comment = elgg_get_annotation_from_id($item->annotation_id);
+		$entity = get_entity($item->annotation_id);
+		if ($entity)
+			return $entity;
+		
+	}
+	return $return;
+}
+
+function threads_activitystreams_parent($hook, $type, $return, $params) {
+        $object = $params['entity'];
+	if ($object && $object->getSubtype() == 'topicreply') {
+		elgg_load_library('elgg:threads');
+		$parent = threads_parent($object->guid);
+		if ($parent) {
+			return $parent;
+		}
+	}
+	return $return;
 }
 
 /**
