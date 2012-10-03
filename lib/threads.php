@@ -2,38 +2,41 @@
 
 function threads_top($entity_guid){
 	$entity = get_entity($entity_guid);
-	if(!$entity) {
-		return false;
-	} elseif($entity->getSubtype() != 'topicreply') {
-		return $entity;
-	} else {
-		$top = elgg_get_entities_from_relationship (array(
+	if(elgg_instanceof($entity, 'object', 'topicreply')) {
+		
+		if ($entity->top_guid) {
+			return get_entity($entity->top_guid);
+		}
+		
+		$top = current(elgg_get_entities_from_relationship (array(
 			'relationship' => 'top',
 			'relationship_guid' => $entity_guid,
 			'inverse_relationship' => false,
 			'limit' => 1
-		));
-		$top = $top[0];
+			)));
 		return $top;
+	} elseif (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
+		return $entity;
 	}
+	return false;
 }
 
 function threads_parent($entity_guid){
 	$entity = get_entity($entity_guid);
-	if(!$entity) {
-		return false;
-	} elseif($entity->getSubtype() != 'topicreply') {
-		return $entity;
-	} else {
-		$parent = elgg_get_entities_from_relationship (array(
+	
+	if(elgg_instanceof($entity, 'object', 'topicreply')) {
+		if ($entity->parent_guid) {
+			return get_entity($entity->parent_guid);
+		}
+		$parent = current(elgg_get_entities_from_relationship (array(
 			'relationship' => 'parent',
 			'relationship_guid' => $entity_guid,
 			'inverse_relationship' => false,
 			'limit' => 1
-		));
-		$parent = $parent[0];
+			)));
 		return $parent;
 	}
+	return false;
 }
 
 function threads_get_replies($entity_guid, $options=array()){
@@ -105,6 +108,8 @@ function threads_reply($parent_guid, $text, $title=""){
 	$reply->description = $text;
 	$reply->access_id = $topic->access_id;
 	$reply->container_guid = $topic->container_guid;
+	$reply->parent_guid = $parent_guid;
+	$reply->top_guid = $topic_guid;
 	if($reply->save()){
 		$reply->addRelationship($parent_guid, 'parent');
 		$reply->addRelationship($topic_guid, 'top');

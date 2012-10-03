@@ -298,8 +298,7 @@ function threads_topic_menu_setup($hook, $type, $return, $params){
 	$group = $entity->getContainerEntity();
 	$topic = threads_top($entity->guid);
 	
-	if(($group && $group->canWriteToContainer() ||
-		elgg_is_admin_logged_in()) && $topic->status != 'closed'){
+	if($group && $group->canWriteToContainer() && $topic && $topic->status != 'closed'){
 		$url = elgg_http_add_url_query_elements($topic->getURL(), array(
 			'box' => 'reply',
 			'guid' => $entity->guid,
