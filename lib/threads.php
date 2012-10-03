@@ -1,6 +1,6 @@
 <?php
 
-function threads_top(int $entity_guid){
+function threads_top($entity_guid){
 	$entity = get_entity($entity_guid);
 	if(!$entity) {
 		return false;
@@ -18,7 +18,7 @@ function threads_top(int $entity_guid){
 	}
 }
 
-function threads_parent(int $entity_guid){
+function threads_parent($entity_guid){
 	$entity = get_entity($entity_guid);
 	if(!$entity) {
 		return false;
@@ -36,7 +36,7 @@ function threads_parent(int $entity_guid){
 	}
 }
 
-function threads_get_replies(int $entity_guid, $options=array()){
+function threads_get_replies($entity_guid, $options=array()){
 	$options['relationship_guid'] = $entity_guid;
 	$defaults = array(
 		'relationship' => 'parent',
@@ -47,7 +47,7 @@ function threads_get_replies(int $entity_guid, $options=array()){
 	return elgg_get_entities_from_relationship($options);
 }
 
-function threads_get_replies_count(int $entity_guid){
+function threads_get_replies_count($entity_guid){
 	$options = array(
 		'relationship_guid' => $entity_guid,
 		'relationship' => 'parent',
@@ -68,7 +68,7 @@ function threads_get_all_replies($options){
 	return elgg_get_entities_from_relationship($options);
 }
 
-function threads_get_all_replies_count(int $entity_guid){
+function threads_get_all_replies_count($entity_guid){
 		$options = array(
 		'relationship_guid' => $entity_guid,
 		'relationship' => 'top',
@@ -78,11 +78,11 @@ function threads_get_all_replies_count(int $entity_guid){
 	return elgg_get_entities_from_relationship($options);
 }
 
-function threads_has_replies(int $entity_guid){
+function threads_has_replies($entity_guid){
 	return threads_get_all_replies_count($entity_guid) > 0;
 }
 
-function threads_list_replies(int $entity_guid, $options=array()){
+function threads_list_replies($entity_guid, $options=array()){
 	$options['relationship_guid'] = $entity_guid;
 	$defaults = array(
 		'relationship' => 'parent',
@@ -93,7 +93,7 @@ function threads_list_replies(int $entity_guid, $options=array()){
 	return elgg_list_entities_from_relationship($options);
 }
 
-function threads_reply(int $parent_guid, $text, $title=""){
+function threads_reply($parent_guid, $text, $title=""){
 	
 	$topic = threads_top($parent_guid);
 	$topic_guid = $topic->guid;
