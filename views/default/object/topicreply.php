@@ -15,7 +15,7 @@ $owner_link = "<a href=\"{$owner->getURL()}\">$owner->name</a>";
 $menu = elgg_view_menu('reply', array(
 	'entity' => $entity,
 	'sort_by' => 'priority',
-	'class' => 'elgg-menu-hz right elgg-menu-annotation',
+	'class' => 'elgg-menu-entity elgg-menu-hz',
 ));
 
 $text = elgg_view("output/longtext", array("value" => $entity->description));
