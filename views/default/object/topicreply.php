@@ -15,7 +15,7 @@ $owner_link = "<a href=\"{$owner->getURL()}\">$owner->name</a>";
 $menu = elgg_view_menu('reply', array(
 	'entity' => $entity,
 	'sort_by' => 'priority',
-	'class' => 'elgg-menu-hz right elgg-menu-annotation',
+	'class' => 'elgg-menu-entity elgg-menu-hz',
 ));
 
 $text = elgg_view("output/longtext", array("value" => $entity->description));
@@ -40,34 +40,25 @@ echo elgg_view_image_block($icon, $body);
 elgg_load_js('jquery.plugins.parsequery');
 elgg_load_js('elgg.threads');
 
-if ($entity->canEdit()) {
-	$form = elgg_view_form('discussion/reply/save', array(), array_merge(array(
-			'entity' => $entity,
-			'reply' => false
-		), $vars)
-	);
-	$hidden = "hidden";
+if (get_input('guid') == $entity->guid) {
+
+	$box = false;
 	
-	if(get_input('box') == "edit" && get_input('guid') == $entity->guid){
-		$hidden = "";
+	if ($entity->canEdit() && get_input('box') == "edit") {
+		$box = 'edit';
 	}
-
-	echo "<div class=\"$hidden mbm replies\" id=\"edit-topicreply-$entity->guid\">$form</div>";
-}
-
-if ($entity->canAnnotate()) {
-	$form = elgg_view_form('discussion/reply/save', array(), array_merge(array(
-			'entity' => $entity,
-			'reply' => true
-		), $vars)
-	);
-	$hidden = "hidden";
+	if ($entity->canAnnotate() && get_input('box') == "reply") {
+		$box = 'reply';
+	}
 	
-	if(get_input('box') == "reply" && get_input('guid') == $entity->guid){
-		$hidden = "";
+	if ($box) {	
+		$form = elgg_view_form('discussion/reply/save', array(), array_merge(array(
+					'entity' => $entity,
+					'reply' => $box == 'reply',
+				), $vars)
+			);
+		echo "<div class=\"mbm replies\" id=\"$box-topicreply-$entity->guid\">$form</div>";
 	}
-
-	echo "<div class=\"$hidden mbm replies\" id=\"reply-topicreply-$entity->guid\">$form</div>";
 }
 
 echo $replies;
