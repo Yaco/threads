@@ -64,7 +64,6 @@ function discussion_handle_list_page($guid) {
 
 	$params = array(
 		'content' => $content,
-		'sidebar' => elgg_view('discussion/sidebar'),
 		'title' => $title,
 		'sidebar' => elgg_view('discussion/sidebar'),
 		'filter' => '',

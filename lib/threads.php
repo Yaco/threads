@@ -96,6 +96,27 @@ function threads_list_replies($entity_guid, $options=array()){
 	return elgg_list_entities_from_relationship($options);
 }
 
+function threads_create($guid, $pars){
+	if (empty($guid)) {
+		$topic = new ElggObject();
+		$topic->subtype = 'groupforumtopic';
+	} else {
+		// load original file object
+		$topic = new ElggObject($guid);
+		if (!$topic || !$topic->canEdit()) {
+			register_error(elgg_echo('discussion:topic:notfound'));
+			forward(REFERER);
+		}
+	}
+
+	// save parameters
+	foreach($pars as $key => $value) {
+		$topic->$key = $value;
+	}
+
+	return $topic->save();
+}
+
 function threads_reply($parent_guid, $text, $title=""){
 	
 	$topic = threads_top($parent_guid);

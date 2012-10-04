@@ -12,6 +12,7 @@ $container_guid = (int) get_input('container_guid');
 $guid = (int) get_input('topic_guid');
 $tags = get_input("tags");
 
+elgg_load_library('elgg:threads');
 elgg_make_sticky_form('topic');
 
 // validation of inputs
@@ -32,30 +33,18 @@ if ($guid > 0) {
 	$new_topic = false;
 }
 
-if ($new_topic) {
-	$topic = new ElggObject();
-	$topic->subtype = 'groupforumtopic';
-} else {
-	// load original file object
-	$topic = new ElggObject($guid);
-	if (!$topic || !$topic->canEdit()) {
-		register_error(elgg_echo('discussion:topic:notfound'));
-		forward(REFERER);
-	}
-}
+$tags = explode(",", $pars['tags']);
 
-$topic->title = $title;
-$topic->description = $desc;
-$topic->status = $status;
-$topic->access_id = $access_id;
-$topic->container_guid = $container_guid;
+$options = array(
+		'title' => $title,
+		'description' => $desc,
+		'status' => $status,
+		'access_id' => $access_id,
+		'container_guid' => $container_guid,
+		'tags' => $tags	);
 
-$tags = explode(",", $tags);
-$topic->tags = $tags;
-
-$result = $topic->save();
-
-if (!$result) {
+$topic_guid = threads_create($guid, $options);
+if (!$topic_guid) {
 	register_error(elgg_echo('discussion:error:notsaved'));
 	forward(REFERER);
 }
@@ -65,11 +54,11 @@ elgg_clear_sticky_form('topic');
 
 
 // handle results differently for new topics and topic edits
-if ($new_topic) {
+if ($guid > 0) {
 	system_message(elgg_echo('discussion:topic:created'));
-	add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic->guid);
+	add_to_river('river/object/groupforumtopic/create', 'create', elgg_get_logged_in_user_guid(), $topic_guid);
 } else {
 	system_message(elgg_echo('discussion:topic:updated'));
 }
 
-forward($topic->getURL());
+forward(get_entity($topic_guid)->getURL());
