@@ -37,9 +37,6 @@ HTML;
 
 echo elgg_view_image_block($icon, $body);
 
-elgg_load_js('jquery.plugins.parsequery');
-elgg_load_js('elgg.threads');
-
 if (get_input('guid') == $entity->guid) {
 
 	$box = false;
@@ -57,7 +54,7 @@ if (get_input('guid') == $entity->guid) {
 					'reply' => $box == 'reply',
 				), $vars)
 			);
-		echo "<div class=\"mbm replies\" id=\"$box-topicreply-$entity->guid\">$form</div>";
+		echo "<div class=\"mvl replies\" id=\"$box-topicreply-$entity->guid\">$form</div>";
 	}
 }
 
