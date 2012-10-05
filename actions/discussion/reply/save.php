@@ -59,4 +59,4 @@ if (!$reply) {
 	system_message(elgg_echo('groupspost:success'));
 }
 
-forward(REFERER);
+forward($topic->getURL());
