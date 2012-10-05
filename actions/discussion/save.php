@@ -33,7 +33,7 @@ if ($guid > 0) {
 	$new_topic = false;
 }
 
-$tags = explode(",", $pars['tags']);
+$tags = explode(",", $tags);
 
 $options = array(
 		'title' => $title,
