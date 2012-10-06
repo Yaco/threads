@@ -117,7 +117,7 @@ function threads_create($guid, $pars){
 	return $topic->save();
 }
 
-function threads_reply($parent_guid, $text, $title=""){
+function threads_reply($parent_guid, $text, $title="", $pars=null){
 	
 	$topic = threads_top($parent_guid);
 	$topic_guid = $topic->guid;
@@ -131,6 +131,15 @@ function threads_reply($parent_guid, $text, $title=""){
 	$reply->container_guid = $topic->container_guid;
 	$reply->parent_guid = $parent_guid;
 	$reply->top_guid = $topic_guid;
+
+	// save parameters
+	if ($pars) {
+		foreach($pars as $key => $value) {
+			$reply->$key = $value;
+		}
+	}
+
+
 	if($reply->save()){
 		$reply->addRelationship($parent_guid, 'parent');
 		$reply->addRelationship($topic_guid, 'top');
