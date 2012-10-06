@@ -65,6 +65,14 @@ function threads_init() {
 	// activity streams support
 	elgg_register_plugin_hook_handler('activitystreams:parent', 'entity', 'threads_activitystreams_parent');
 	elgg_register_plugin_hook_handler('activitystreams:object', 'river', 'threads_activitystreams_object');
+
+	elgg_register_event_handler('upgrade', 'system', 'threads_run_upgrades');
+}
+
+function threads_run_upgrades($event, $type, $details) {
+	if (include_once(elgg_get_plugins_path() . 'upgrade-tools/lib/upgrade_tools.php')) {
+		upgrade_module_run('threads');
+	}
 }
 
 function threads_activitystreams_object($hook, $type, $return, $params) {
