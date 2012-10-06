@@ -112,8 +112,8 @@ foreach(array('groupforumtopic', 'groupforumpost') as $type) {
 	elgg_set_ignore_access($previous_access);
 
 	if ($batch->callbackResult) {
-		error_log("Elgg Groups upgrade  $type (2011030101) succeeded");
+		error_log("Elgg Threads upgrade  $type (201210050) succeeded");
 	} else {
-		error_log("Elgg Groups upgrade $type (2011030101) failed");
+		error_log("Elgg Threads upgrade $type (201210050) failed");
 	}
 }
