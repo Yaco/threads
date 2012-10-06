@@ -41,7 +41,9 @@ function threads_groupforumtopic_2012100501($topic) {
 		$options = array('object_guid' => $topic->guid);
 		$items = elgg_get_river($options);
 		foreach($items as $item) {
-			upgrade_update_river($item->id, 'river/object/groupforumtopic/create', $topic->guid, 0);
+			if ($item->action_type == 'create') {
+				upgrade_update_river($item->id, 'river/object/groupforumtopic/create', $topic->guid, 0);
+			}
 		}
 	}
 
