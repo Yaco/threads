@@ -8,8 +8,7 @@
 $topics = elgg_get_entities(array(
 	'type' => 'object',
 	'subtypes' => array('groupforumpost'),
-	'limit' => 5,
-	'order_by' => 'e.time_created asc',
+	'limit' => 1,
 ));
 
 // if not topics, no upgrade required
