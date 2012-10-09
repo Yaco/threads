@@ -31,13 +31,13 @@ $date = elgg_view_friendly_time($topic->time_created);
 $replies_link = '';
 $num_replies = threads_get_all_replies_count($topic->guid);
 if ($num_replies != 0) {
-	$last_reply = $topic->getEntitiesFromRelationship('top', true, 1);
-	$last_poster = $last_reply[0]->getOwnerEntity();
+	$last_reply = threads_get_last_topic_reply($topic->guid);
+	$last_poster = $last_reply->getOwnerEntity();
 	$last_poster_link = elgg_view('output/url', array(
 		'href' => $last_poster->getURL(),
 		'text' => $last_poster->name,
 	));
-	$reply_time = elgg_view_friendly_time($last_reply[0]->time_created);
+	$reply_time = elgg_view_friendly_time($last_reply->time_created);
 	$reply_text = elgg_echo('groups:updated', array($last_poster_link, $reply_time));
 	
 	$replies_link = elgg_view('output/url', array(
