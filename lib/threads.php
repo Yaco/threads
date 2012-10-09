@@ -66,7 +66,10 @@ function threads_list_replies($entity_guid, $options = array()){
 }
 
 function threads_get_last_topic_reply($topic_guid) {
-	return current(threads_get_all_replies($topic_guid, array('limit' => 1)));
+	return current(threads_get_all_replies($topic_guid, array(
+		'limit' => 1,
+		'order_by' => 'e.time_created desc'
+	)));
 }
 
 function threads_create($guid, $params){
