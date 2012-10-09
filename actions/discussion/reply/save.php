@@ -20,7 +20,6 @@ if (empty($text)) {
 }
 
 $topic = threads_top($entity_guid);
-$topic_guid = $topic->guid;
 if (!$topic) {
 	register_error(elgg_echo('grouppost:nopost'));
 	forward(REFERER);
