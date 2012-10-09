@@ -3,17 +3,14 @@
 function threads_top($entity_guid){
 	$entity = get_entity($entity_guid);
 	if(elgg_instanceof($entity, 'object', 'topicreply')) {
-		
 		if ($entity->top_guid) {
 			return get_entity($entity->top_guid);
 		}
 		
-		$top = current(elgg_get_entities_from_relationship (array(
-			'relationship' => 'top',
-			'relationship_guid' => $entity_guid,
+		$top = current(threads_get_all_replies($entity_guid, array(
 			'inverse_relationship' => false,
-			'limit' => 1
-			)));
+			'limit' => 1,
+		)));
 		return $top;
 	} elseif (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
 		return $entity;
@@ -28,12 +25,10 @@ function threads_parent($entity_guid){
 		if ($entity->parent_guid) {
 			return get_entity($entity->parent_guid);
 		}
-		$parent = current(elgg_get_entities_from_relationship (array(
-			'relationship' => 'parent',
-			'relationship_guid' => $entity_guid,
+		$parent = current(threads_get_replies($entity_guid, array(
 			'inverse_relationship' => false,
 			'limit' => 1
-			)));
+		)));
 		return $parent;
 	}
 	return false;
@@ -51,13 +46,7 @@ function threads_get_replies($entity_guid, $options=array()){
 }
 
 function threads_get_replies_count($entity_guid){
-	$options = array(
-		'relationship_guid' => $entity_guid,
-		'relationship' => 'parent',
-		'inverse_relationship' => true,
-		'count' => true
-	);
-	return elgg_get_entities_from_relationship($options);
+	return threads_get_replies($entity_guid, array('count' => true));
 }
 
 function threads_get_all_replies($options){
@@ -72,37 +61,20 @@ function threads_get_all_replies($options){
 }
 
 function threads_get_all_replies_count($entity_guid){
-		$options = array(
-		'relationship_guid' => $entity_guid,
-		'relationship' => 'top',
-		'inverse_relationship' => true,
-		'count' => true
-	);
-	return elgg_get_entities_from_relationship($options);
+	return threads_get_all_replies($entity_guid, array('count' => true));
 }
 
 function threads_has_replies($entity_guid){
 	return threads_get_all_replies_count($entity_guid) > 0;
 }
 
-function threads_list_replies($entity_guid, $options=array()){
+function threads_list_replies($entity_guid, $options = array()){
 	$options['relationship_guid'] = $entity_guid;
-	$defaults = array(
-		'relationship' => 'parent',
-		'inverse_relationship' => true,
-		'order_by' => 'e.time_created asc'
-	);
-	$options = array_merge($defaults, $options);
-	return elgg_list_entities_from_relationship($options);
+	return elgg_view_entity_list(threads_get_replies($entity_guid, $options), $options);
 }
 
 function threads_get_last_topic_reply($topic_guid) {
-	return current(elgg_get_entities_from_relationship(array(
-		'relationship' => 'top',
-		'relaitonship_guid' => $topic_guid,
-		'inverse_relationship' => true,
-		'limit' => 1,
-	)));
+	return current(threads_get_all_replies($topic_guid, array('limit' => 1)));
 }
 
 function threads_create($guid, $pars){
