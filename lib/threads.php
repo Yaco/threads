@@ -67,7 +67,7 @@ function threads_get_all_replies($options){
 		'inverse_relationship' => true,
 		'order_by' => 'e.time_created asc'
 	);
-	$options = array_merge($default, $options);
+	$options = array_merge($defaults, $options);
 	return elgg_get_entities_from_relationship($options);
 }
 
@@ -92,13 +92,14 @@ function threads_list_replies($entity_guid, $options=array()){
 		'inverse_relationship' => true,
 		'order_by' => 'e.time_created asc'
 	);
-	$options = array_merge($default, $options);
+	$options = array_merge($defaults, $options);
 	return elgg_list_entities_from_relationship($options);
 }
 
 function threads_get_last_topic_reply($topic_guid) {
 	return current(elgg_get_entities_from_relationship(array(
 		'relationship' => 'top',
+		'relaitonship_guid' => $topic_guid,
 		'inverse_relationship' => true,
 		'limit' => 1,
 	)));
