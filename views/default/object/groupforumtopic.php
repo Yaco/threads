@@ -76,8 +76,10 @@ if ($full) {
 	$body = elgg_view('output/longtext', array('value' => $topic->description));
 
 	echo <<<HTML
-$info
-$body
+<div class="elgg-content">
+	$info
+	$body
+</div>
 HTML;
 
 } else {
