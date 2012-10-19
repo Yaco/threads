@@ -23,6 +23,7 @@ if (!$topics) {
  */
 function threads_groupforumtopic_2012100501($topic) {
 	require_once(elgg_get_plugins_path() . 'upgrade-tools/lib/upgrade_tools.php');
+	error_log("topic $topic->guid");
 	$first_post = current($topic->getEntitiesFromRelationship('group_discussion_top_level_post', false, 1));
 	if ($first_post) {
 		$annotations = $first_post->getAnnotations('group_topic_post');
@@ -51,6 +52,7 @@ function threads_groupforumtopic_2012100501($topic) {
 }
 function threads_groupforumpost_2012100501($post) {
 	require_once(elgg_get_plugins_path() . 'upgrade-tools/lib/upgrade_tools.php');
+	error_log("post $post->guid");
 	// get content from annotations and copy into description
 	$annotations = $post->getAnnotations('group_topic_post');
 	foreach($annotations as $annotation) {
@@ -103,17 +105,17 @@ function threads_groupforumpost_2012100501($post) {
  * Run upgrade. First topics, then replies.
  */
 foreach(array('groupforumtopic', 'groupforumpost') as $type) {
-	$previous_access = elgg_set_ignore_access(true);
 	$options = array(
 		'type' => 'object',
 		'subtype' => $type,
 		'limit' => 0,
 	);
-	$batch = new ElggBatch('elgg_get_entities', $options, "threads_{$type}_2012100501", 100);
+	$previous_access = elgg_set_ignore_access(true);
+	$batch = new ElggBatch('elgg_get_entities', $options, "threads_{$type}_2012100501", 10);
 	elgg_set_ignore_access($previous_access);
 
 	if ($batch->callbackResult) {
-		error_log("Elgg Threads upgrade  $type (201210050) succeeded");
+		error_log("Elgg Threads upgrade $type (201210050) succeeded");
 	} else {
 		error_log("Elgg Threads upgrade $type (201210050) failed");
 	}
