@@ -80,11 +80,9 @@ function threads_groupforumpost_2012100501($post) {
 			$parent->removeRelationship($post->guid, 'group_discussion_reply_post');
 	}
 	if ($parent) {
-		$post->parent_guid = $parent->guid;
 		$post->addRelationship($parent->guid, 'parent');
 	}
 	if ($topic) {
-		$post->top_guid = $topic->guid;
 		$post->addRelationship($topic->guid, 'top');
 	}
 	$post->save();
