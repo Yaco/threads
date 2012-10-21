@@ -15,7 +15,7 @@ function discussion_handle_all_page() {
 		'type' => 'object',
 		'subtype' => 'groupforumtopic',
 		'order_by' => 'e.last_action desc',
-		'limit' => 40,
+		'limit' => 20,
 		'full_view' => false,
 	));
 
@@ -60,6 +60,9 @@ function discussion_handle_list_page($guid) {
 		'full_view' => false,
 	);
 	$content = elgg_list_entities($options);
+	if (!$content) {
+		$content = elgg_echo('discussion:none');
+	}
 
 
 	$params = array(
@@ -90,8 +93,8 @@ function discussion_handle_edit_page($type, $guid) {
 			forward();
 		}
 
-		// make sure user has permissions to write to container
-		if (!$group->canWriteToContainer()) {
+		// make sure user has permissions to add a topic to container
+		if (!$group->canWriteToContainer(0, 'object', 'groupforumtopic')) {
 			register_error(elgg_echo('groups:permissions:error'));
 			forward($group->getURL());
 		}
@@ -147,8 +150,9 @@ function discussion_handle_view_page($guid) {
 
 	$topic = get_entity($guid);
 	if (!$topic) {
-		register_error(elgg_echo('discussion:topic:notfound'));
-		forward();
+		register_error(elgg_echo('noaccess'));
+		$_SESSION['last_forward_from'] = current_page_url();
+		forward('');
 	}
 
 	$group = $topic->getContainerEntity();
@@ -165,10 +169,23 @@ function discussion_handle_view_page($guid) {
 	elgg_push_breadcrumb($topic->title);
 
 	$content = elgg_view_entity($topic, array('full_view' => true));
-	$content .= elgg_view('discussion/replies', array(
-		'entity' => $topic,
-		'id' => 'group-replies'
-	));
+	if ($topic->status == 'closed') {
+		$content .= elgg_view('discussion/replies', array(
+			'entity' => $topic,
+			'show_add_form' => false,
+		));
+		$content .= elgg_view('discussion/closed');
+	} elseif ($group->canWriteToContainer(0, 'object', 'groupforumtopic') || elgg_is_admin_logged_in()) {
+		$content .= elgg_view('discussion/replies', array(
+			'entity' => $topic,
+			'show_add_form' => true,
+		));
+	} else {
+		$content .= elgg_view('discussion/replies', array(
+			'entity' => $topic,
+			'show_add_form' => false,
+		));
+	}
 
 	$params = array(
 		'content' => $content,
@@ -178,7 +195,7 @@ function discussion_handle_view_page($guid) {
 	);
 	$body = elgg_view_layout('content', $params);
 
-	echo elgg_view_page($title, $body);
+	echo elgg_view_page($topic->title, $body);
 }
 
 /**
