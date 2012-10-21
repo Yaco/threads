@@ -50,8 +50,6 @@ function threads_init() {
 	elgg_register_plugin_hook_handler('notify:entity:message', 'object', 'groupforumtopic_notify_message');*/
 	
 	// add link to reply topics
-	elgg_register_plugin_hook_handler('register', 'menu:entity', 'threads_topic_menu_setup');
-	elgg_register_plugin_hook_handler('register', 'menu:reply', 'likes_entity_menu_setup');
 	elgg_register_plugin_hook_handler('register', 'menu:river', 'threads_add_to_river_menu');
 	
 	elgg_extend_view('css/elgg', 'discussion/css');
@@ -297,33 +295,6 @@ function threads_can_edit_discussion($entity, $group_owner) {
 	}
 }
 
-function threads_topic_menu_setup($hook, $type, $return, $params){
-	
-	$entity = $params['entity'];
-	
-	elgg_load_library('elgg:threads');
-	
-	$group = $entity->getContainerEntity();
-	$topic = threads_top($entity->guid);
-	
-	if($group && $group->canWriteToContainer() && $topic && $topic->status != 'closed'){
-		$url = elgg_http_add_url_query_elements($topic->getURL(), array(
-			'box' => 'reply',
-			'guid' => $entity->guid,
-		));
-
-		$options = array(
-			'name' => 'reply',
-			'href' => $url,
-			'text' => elgg_echo('reply'),
-			'text_encode' => false,
-			'priority' => 200
-		);
-		$return[] = ElggMenuItem::factory($options);
-	}
-	return $return;
-}
-
 /**
  * Add edit and delete links for forum replies
  */
@@ -337,8 +308,6 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 	if ($entity->type != 'object' || $entity->getSubtype() != 'topicreply') {
 		return $return;
 	}
-	
-	elgg_load_library('elgg:threads');
 
 	if ($entity->canEdit()) {
 		$url = elgg_http_add_url_query_elements('action/discussion/reply/delete', array(
@@ -348,7 +317,7 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 		$options = array(
 			'name' => 'delete',
 			'href' => $url,
-			'text' => "<span class=\"elgg-icon elgg-icon-delete\"></span>",
+			'text' => elgg_view_icon('delete'),
 			'confirm' => elgg_echo('deleteconfirm'),
 			'text_encode' => false,
 			'priority' => 500
@@ -366,27 +335,6 @@ function threads_reply_menu_setup($hook, $type, $return, $params) {
 			'text' => elgg_echo('edit'),
 			'text_encode' => false,
 			'priority' => 100,
-		);
-		$return[] = ElggMenuItem::factory($options);
-	}
-	
-	$group = $entity->getContainerEntity();
-	$topic = threads_top($entity);
-	
-	if(($group && $group->canWriteToContainer() ||
-		elgg_is_admin_logged_in()) && $topic->status != 'closed'){
-
-		$url = elgg_http_add_url_query_elements('', array(
-			'box' => 'reply',
-			'guid' => $entity->guid,
-		));
-
-		$options = array(
-			'name' => 'reply',
-			'href' => $url,
-			'text' => elgg_echo('reply'),
-			'text_encode' => false,
-			'priority' => 50,
 		);
 		$return[] = ElggMenuItem::factory($options);
 	}
