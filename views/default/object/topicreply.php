@@ -3,7 +3,10 @@
  * Embeds an edit link for the annotation
  */
 
+elgg_load_library("elgg:threads");
+
 $entity = elgg_extract('entity', $vars);
+$topic = threads_top($entity->guid);
 
 $owner = get_entity($entity->owner_guid);
 if (!$entity || !$owner) {
@@ -55,7 +58,7 @@ if (get_input('guid') == $entity->guid && get_input('box')) {
 			);
 		echo "<div class=\"mvl replies\" id=\"$box-topicreply-$entity->guid\">$form</div>";
 	}
-} else {
+} elseif ($entity->canAnnotate() && $topic->status != 'closed') {
 	echo elgg_view('output/url', array(
 		'text' => elgg_echo('reply'),
 		'href' => current_page_url() . "?box=reply&guid=$entity->guid",
