@@ -112,6 +112,7 @@ function threads_activitystreams_parent($hook, $type, $return, $params) {
  */
 function threads_page_handler($page) {
 
+	elgg_load_library('elgg:groups');
 	elgg_load_library('elgg:discussion');
 
 	elgg_push_breadcrumb(elgg_echo('discussion'), 'discussion/all');
