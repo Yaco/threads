@@ -5,6 +5,8 @@
  * First determine if the upgrade is needed and then if needed, batch the update
  */
 
+global $MIGRATED;
+
 $topics = elgg_get_entities(array(
 	'type' => 'object',
 	'subtypes' => array('groupforumpost'),
@@ -23,8 +25,11 @@ if (!$topics) {
  */
 function threads_groupforumtopic_2012100501($topic) {
 	require_once(elgg_get_plugins_path() . 'upgrade-tools/lib/upgrade_tools.php');
-	error_log("topic $topic->guid");
 	$first_post = current($topic->getEntitiesFromRelationship('group_discussion_top_level_post', false, 1));
+	global $MIGRATED;
+	$MIGRATED += 1;
+	if ($MIGRATED %100 == 0)
+		error_log("topic $topic->guid $first_post->guid");
 	if ($first_post) {
 		$annotations = $first_post->getAnnotations('group_topic_post');
 		$description = "";
@@ -50,9 +55,13 @@ function threads_groupforumtopic_2012100501($topic) {
 
 	return true;
 }
+
 function threads_groupforumpost_2012100501($post) {
 	require_once(elgg_get_plugins_path() . 'upgrade-tools/lib/upgrade_tools.php');
-	error_log("post $post->guid");
+	global $MIGRATED;
+	$MIGRATED += 1;
+	if ($MIGRATED %100 == 0)
+		error_log("post $post->guid");
 	// get content from annotations and copy into description
 	$annotations = $post->getAnnotations('group_topic_post');
 	foreach($annotations as $annotation) {
@@ -103,6 +112,7 @@ function threads_groupforumpost_2012100501($post) {
  * Run upgrade. First topics, then replies.
  */
 foreach(array('groupforumtopic', 'groupforumpost') as $type) {
+	$MIGRATED = 0;
 	$options = array(
 		'type' => 'object',
 		'subtype' => $type,
