@@ -15,6 +15,7 @@ $topics = elgg_get_entities(array(
 
 // if not topics, no upgrade required
 if (!$topics) {
+	error_log("Threads upgrade not needed");
 	return;
 }
 
@@ -28,6 +29,9 @@ function threads_groupforumtopic_2012100501($topic) {
 	$first_post = current($topic->getEntitiesFromRelationship('group_discussion_top_level_post', false, 1));
 	global $MIGRATED;
 	$MIGRATED += 1;
+	if ($topic->migrated == 1) {
+		return true;
+	}
 	if ($MIGRATED %100 == 0)
 		error_log("topic $topic->guid $first_post->guid");
 	if ($first_post) {
@@ -39,6 +43,7 @@ function threads_groupforumtopic_2012100501($topic) {
 			}
 		}
 		$topic->description = $description;
+		$topic->migrated = 1;
 		$topic->save();
 		// delete the first post, we dont need it any more
 		$first_post->delete();
@@ -119,7 +124,10 @@ foreach(array('groupforumtopic', 'groupforumpost') as $type) {
 		'limit' => 0,
 	);
 	$previous_access = elgg_set_ignore_access(true);
-	$batch = new ElggBatch('elgg_get_entities', $options, "threads_{$type}_2012100501", 10);
+	if ($type == 'groupforumpost')
+		$batch = new ElggBatch('elgg_get_entities', $options, "threads_{$type}_2012100501", 10, false);
+	else
+		$batch = new ElggBatch('elgg_get_entities', $options, "threads_{$type}_2012100501", 10);
 	elgg_set_ignore_access($previous_access);
 
 	if ($batch->callbackResult) {
