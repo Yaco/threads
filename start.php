@@ -16,6 +16,7 @@ function threads_init() {
 	elgg_register_library('elgg:threads', elgg_get_plugins_path() . 'threads/lib/threads.php');
 
 	elgg_register_page_handler('discussion', 'threads_page_handler');
+	elgg_register_page_handler('threaded_forums', 'threads_page_handler');
 
 	//elgg_register_entity_url_handler('object', 'groupforumtopic', 'threads_override_topic_url');
 
@@ -107,10 +108,16 @@ function threads_activitystreams_parent($hook, $type, $return, $params) {
  *  View discussion topic: discussion/view/<guid>
  *  Add discussion topic:  discussion/add/<guid>
  *  Edit discussion topic: discussion/edit/<guid>
+ *  Redirect old urls:     threaded_forums/<guid> -> discussion/owner/<guid>
  *
  * @param array $page Array of url segments for routing
  */
-function threads_page_handler($page) {
+function threads_page_handler($page, $handler) {
+
+	// Old urls
+	if ($handler == 'threaded_forums') {
+		forward('discussion/owner/' . $page[0]);
+	}
 
 	elgg_load_library('elgg:groups');
 	elgg_load_library('elgg:discussion');
