@@ -62,7 +62,17 @@ function threads_has_replies($entity_guid){
 
 function threads_list_replies($entity_guid, $options = array()){
 	$options['relationship_guid'] = $entity_guid;
-	return elgg_view_entity_list(threads_get_replies($entity_guid, $options), $options);
+	$entity = get_entity($entity_guid);
+	$vars = array();
+	if ($entity->getSubtype() == 'groupforumtopic') {
+		$offset = (int)get_input('offset', 0);
+		$options['count'] = true;
+		$vars['count'] = threads_get_replies($entity_guid, $options);
+		$vars['offset'] = $offset;
+		$options['offset'] = $offset;
+		$options['count'] = false;
+	}
+	return elgg_view_entity_list(threads_get_replies($entity_guid, $options), $vars, $offset);
 }
 
 function threads_get_last_topic_reply($topic_guid) {
