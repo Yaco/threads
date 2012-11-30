@@ -112,6 +112,13 @@ function threads_groupforumpost_2012100501($post) {
 	return true;
 }
 
+function threads_group_option_2012100501($group) {
+        if ($group->threaded_forums_enable) {
+                $group->forum_enable = $group->threaded_forums_enable;
+                $group->deleteMetadata('threaded_forums_enable');
+        }
+}
+
 
 /*
  * Run upgrade. First topics, then replies.
@@ -136,3 +143,22 @@ foreach(array('groupforumtopic', 'groupforumpost') as $type) {
 		error_log("Elgg Threads upgrade $type (201210050) failed");
 	}
 }
+
+
+/* Ser group option */
+$options = array(
+        'type' => 'group',
+        'limit' => 0,
+);
+
+$previous_access = elgg_set_ignore_access(true);
+$batch = new ElggBatch('elgg_get_entities', $options, "threads_group_option_2012100501", 100);
+elgg_set_ignore_access($previous_access);
+
+if ($batch->callbackResult) {
+        error_log("Threads group option upgrade (201210050) succeeded");
+} else {
+        error_log("Threads group option upgrade (201210050) failed");
+}
+
+
