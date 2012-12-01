@@ -63,16 +63,19 @@ function threads_has_replies($entity_guid){
 function threads_list_replies($entity_guid, $options = array()){
 	$options['relationship_guid'] = $entity_guid;
 	$entity = get_entity($entity_guid);
-	$vars = array();
-	if ($entity->getSubtype() == 'groupforumtopic') {
-		$offset = (int)get_input('offset', 0);
-		$options['count'] = true;
-		$vars['count'] = threads_get_replies($entity_guid, $options);
-		$vars['offset'] = $offset;
-		$options['offset'] = $offset;
-		$options['count'] = false;
+	if (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
+		$options['pagination'] = true;
+	} else {
+		$options['pagination'] = false;
+		$options['limit'] = 0;
 	}
-	return elgg_view_entity_list(threads_get_replies($entity_guid, $options), $vars, $offset);
+	$options['offset'] = (int) get_input('offset', 0);
+
+	$replies = threads_get_replies($entity_guid, $options);
+	$options['count'] = threads_get_replies($entity_guid, array_merge($options, array(
+		'count' => true,
+	)));
+	return elgg_view_entity_list($replies, $options);
 }
 
 function threads_get_last_topic_reply($topic_guid) {
