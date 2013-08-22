@@ -3,6 +3,7 @@
  * Latest forum posts
  *
  * @uses $vars['entity']
+ * @override mod/groups/views/discussion/group_module.php
  */
 
 if ($vars['entity']->forum_enable == 'no') {

@@ -2,6 +2,7 @@
 /**
  * Post a reply to discussion topic
  *
+ * @override mod/groups/actions/discussion/reply/save.php
  */
 
 gatekeeper();

@@ -2,6 +2,7 @@
 /**
  * Delete topic action
  *
+ * @override mod/groups/actions/discussion/delete.php
  */
 
 $topic_guid = (int) get_input('guid');

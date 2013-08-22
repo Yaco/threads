@@ -2,6 +2,7 @@
 /**
  * Discussion topic add/edit form body
  * 
+ * @override mod/groups/views/default/forms/discussion/save.php
  */
 
 $title = elgg_extract('title', $vars, '');

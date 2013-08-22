@@ -4,6 +4,8 @@
  *
  * @uses $vars['entity']        ElggEntity
  * @uses $vars['id']
+ * 
+ * @override mod/groups/views/default/discussion/replies.php
  */
 
 $id = isset($vars['id']) ? " id=\"{$vars['id']}\"" : "";

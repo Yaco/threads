@@ -1,6 +1,7 @@
 <?php
 /*
  * Embeds an edit link for the annotation
+ * @override mod/groups/views/object/topicreply.php
  */
 
 elgg_load_library("elgg:threads");

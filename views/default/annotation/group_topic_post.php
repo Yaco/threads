@@ -1,6 +1,8 @@
 <?php
 /*
  * Embeds an edit link for the annotation
+ *
+ * @override mod/groups/views/default/annotation/group_topic_post.php
  */
 
 $annotation = elgg_extract('annotation', $vars);

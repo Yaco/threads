@@ -1,6 +1,8 @@
 <?php
 /**
  * Topic save action
+ * 
+ * @override mod/groups/actions/discussion/save.php
  */
 
 // Get variables
