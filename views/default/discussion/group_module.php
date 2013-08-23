@@ -16,6 +16,7 @@ $group = $vars['entity'];
 $all_link = elgg_view('output/url', array(
 	'href' => "discussion/owner/$group->guid",
 	'text' => elgg_echo('link:view:all'),
+	'is_trusted' => true,
 ));
 
 elgg_push_context('widgets');
@@ -38,6 +39,7 @@ if (!$content) {
 $new_link = elgg_view('output/url', array(
 	'href' => "discussion/add/" . $group->getGUID(),
 	'text' => elgg_echo('groups:addtopic'),
+	'is_trusted' => true,
 ));
 
 echo elgg_view('groups/profile/module', array(
