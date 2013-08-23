@@ -3,7 +3,7 @@
  * Forum topic entity view
  *
  * @package ElggGroups
- * @override mod/groups/views/object/groupforumtopic.php
+ * @override mod/groups/views/default/object/groupforumtopic.php
 */
 
 elgg_load_library('elgg:threads');
