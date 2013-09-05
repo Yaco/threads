@@ -26,7 +26,7 @@ if (!$topic) {
 	forward(REFERER);
 }
 
-$user = get_loggedin_user();
+$user = elgg_get_logged_in_user_entity();
 
 $group = $topic->getContainerEntity();
 if (!$group->canWriteToContainer($user)) {
