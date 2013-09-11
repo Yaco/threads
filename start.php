@@ -25,7 +25,6 @@ function threads_init() {
 	
 	$action_base = elgg_get_plugins_path() . 'threads/actions/discussion';
 	elgg_register_action('discussion/save', "$action_base/save.php");
-	elgg_register_action('discussion/delete', "$action_base/delete.php");
 	elgg_register_action('discussion/reply/save', "$action_base/reply/save.php");
 	elgg_register_action('discussion/reply/delete', "$action_base/reply/delete.php");
 
