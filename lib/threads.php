@@ -65,6 +65,7 @@ function threads_list_replies($entity_guid, $options = array()){
 	$entity = get_entity($entity_guid);
 	if (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
 		$options['pagination'] = true;
+		$options['limit'] = 10;
 	} else {
 		$options['pagination'] = false;
 		$options['limit'] = 0;
